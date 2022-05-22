@@ -59,4 +59,9 @@ public class User extends Entity<Integer>{
     public int hashCode() {
         return Objects.hash(username);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

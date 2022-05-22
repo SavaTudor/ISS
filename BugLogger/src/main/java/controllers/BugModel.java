@@ -6,18 +6,21 @@ import model.Status;
 
 public class BugModel {
     private SimpleStringProperty name;
+    SimpleStringProperty id;
     private SimpleStringProperty status;
     private SimpleStringProperty severity;
     private SimpleStringProperty assignedTo;
 
-    public BugModel(SimpleStringProperty name, SimpleStringProperty status, SimpleStringProperty severity, SimpleStringProperty assignedTo) {
+    public BugModel(SimpleStringProperty id, SimpleStringProperty name, SimpleStringProperty status, SimpleStringProperty severity, SimpleStringProperty assignedTo) {
+        this.id = id;
         this.name = name;
         this.status = status;
         this.severity = severity;
         this.assignedTo = assignedTo;
     }
 
-    public BugModel(String name, Status status, Severity severity, String assignedTo) {
+    public BugModel(int id, String name, Status status, Severity severity, String assignedTo) {
+        this.id = new SimpleStringProperty(String.valueOf(id));
         this.name = new SimpleStringProperty(name);
         this.status = new SimpleStringProperty(status.getStatusString());
         this.severity = new SimpleStringProperty(severity.getSeverityString());
@@ -70,5 +73,17 @@ public class BugModel {
 
     public void setAssignedTo(String assignedTo) {
         this.assignedTo.set(assignedTo);
+    }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
     }
 }

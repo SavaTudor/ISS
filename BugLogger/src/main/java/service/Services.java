@@ -1,21 +1,39 @@
 package service;
 
-import infrastructure.BugRepository;
-import infrastructure.RepositoryException;
-import infrastructure.UserRepository;
-import model.Bug;
-import model.User;
+import infrastructure.*;
+import model.*;
+import utils.IObservable;
+import utils.IObserver;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class Services {
+public class Services implements IObservable {
     private UserRepository userRepository;
     private BugRepository bugRepository;
+    List<IObserver> observerList;
+
+    public void addObserver(IObserver observer) {
+        observerList.add(observer);
+    }
+
+    public void removeObserver(IObserver observer) {
+        observerList.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (var i : observerList) {
+            i.update();
+        }
+    }
 
     public Services() {
+        observerList = new ArrayList<>();
+
         var props = new Properties();
         try {
             props.load(new FileReader("bd.config"));
@@ -39,6 +57,49 @@ public class Services {
     }
 
     public User findUser(Integer id) throws RepositoryException {
-        return userRepository.find(id);
+        return userRepository.findById(id);
+    }
+
+    public ArrayList<User> getProgrammers() {
+        var list = new ArrayList<User>();
+        userRepository.getAll().forEach(x -> {
+            if (x.getRole() == RoleType.PROGRAMMER) {
+                list.add(x);
+            }
+        });
+        return list;
+    }
+
+    public void addNewBug(String titleString, String descriptionString, Severity value, User value1) throws
+            RepositoryException {
+
+        bugRepository.add(new Bug(titleString, descriptionString, Status.NEW, value, value1.getId()));
+        notifyObservers();
+    }
+
+    public void editBug(Integer id, String titleString, String descriptionString, Status value) throws RepositoryException {
+        Bug bug = bugRepository.find(id);
+        Bug newBug = new Bug(titleString, descriptionString, value, bug.getSeverity(), bug.getAssignedTo());
+        newBug.setId(id);
+        bugRepository.update(newBug);
+        notifyObservers();
+    }
+
+    public Bug findBug(Integer id) {
+        try {
+            return bugRepository.find(id);
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    public void deleteBug(Integer id) throws RepositoryException {
+        try {
+            bugRepository.delete(id);
+            notifyObservers();
+        }catch (Exception e){
+            throw new RepositoryException(e.getMessage());
+        }
     }
 }
+
