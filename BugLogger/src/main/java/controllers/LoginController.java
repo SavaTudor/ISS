@@ -45,7 +45,7 @@ public class LoginController {
             stage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             alert.setHeaderText(e.getMessage());
 
             alert.setTitle("Error");

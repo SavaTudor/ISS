@@ -101,5 +101,10 @@ public class Services implements IObservable {
             throw new RepositoryException(e.getMessage());
         }
     }
+
+    public void addUser(String username, String name, String password, RoleType role) throws RepositoryException {
+        User user = new User(username, name, role, password);
+        userRepository.add(user);
+    }
 }
 

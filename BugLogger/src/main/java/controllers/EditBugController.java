@@ -67,7 +67,7 @@ public class EditBugController {
             descriptionField.clear();
             statusChoiceBox.getSelectionModel().clearSelection();
         } catch (Exception ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
             alert.setHeaderText(ex.getMessage());
 
             alert.setTitle("Error");

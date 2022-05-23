@@ -46,6 +46,9 @@ public class UserController implements Initializable, IObserver {
 
     @FXML
     public Button addNewBugBtn;
+
+    @FXML
+    public Button addNewUser;
     @FXML
     public TableColumn<BugModel, String> assignedTo;
 
@@ -53,11 +56,8 @@ public class UserController implements Initializable, IObserver {
         this.service = service;
         this.user = user;
         username.setText(user.getName());
-        if(user.getRole()== RoleType.PROGRAMMER){
-            addNewBugBtn.setDisable(true);
-        }else{
-            addNewBugBtn.setDisable(false);
-        }
+        addNewBugBtn.setDisable(user.getRole() == RoleType.PROGRAMMER);
+        addNewUser.setDisable(user.getRole() != RoleType.ADMIN);
         try {
             tableView.setItems(loadTable());
         } catch (Exception ignored) {
@@ -129,10 +129,24 @@ public class UserController implements Initializable, IObserver {
             stage.setTitle("Edit Bug");
             stage.setScene(new Scene(root, 450, 450));
             stage.show();
-            tableView.setItems(loadTable());
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (RepositoryException e) {
+        }
+    }
+
+    @FXML
+    private void addNewUserClicked() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/AddNewEmployeePopup.fxml"));
+            AnchorPane root = loader.load();
+            NewUserController newUserController = (NewUserController) loader.getController();
+            newUserController.setService(service);
+            Stage stage = new Stage();
+            stage.setTitle("New User");
+            stage.setScene(new Scene(root, 450, 450));
+            stage.show();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

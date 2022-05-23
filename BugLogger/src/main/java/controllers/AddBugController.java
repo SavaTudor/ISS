@@ -56,7 +56,7 @@ public class AddBugController{
             severity.getSelectionModel().clearSelection();
             assignedTo.getSelectionModel().clearSelection();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             alert.setHeaderText(e.getMessage());
 
             alert.setTitle("Error");
